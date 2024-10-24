@@ -30,6 +30,8 @@ unzip *.zip
 cd fastp*
 make -j # User might want to make sure they have gcc+ installed 
 
+# This could be changed to trimmomatic if easier 
+
 
 
 
