@@ -3,7 +3,8 @@
 # Goals of this repo: 
 1) This repo decouments a very basic pipeline for NGS analysis from quality control to downstream analysis including variant calling and SNP detection. 
 2) This pipeline is well-established and could be applicable to wide range of NGS data with modification. However, the example data here presented will use Illumina paired-read with 150 base pair per read. 
-PS: I will simulate the data with a grand truth relationship ((A,B),C),D) with 100 genes. I will concatenate the genes and add into random regions in between and suffle the sequences into 150 sequences. By this, I know the actual genes and SNP and can compare the results. Alternatively, if there is not enough time for me to simulate the sequences, I will find online resources for a demo.  
+
+Note: I will simulate the data with a grand truth relationship ((A,B),C),D) with four taxa and each with 100 genes. I will concatenate the genes and add into random regions in between and suffle the sequences into 150 sequences. By this, I know the actual genes and SNP and can compare the results. In the end, I can compare the grand truth with the assembly tutorial I wrote. Alternatively, if there is not enough time for me to simulate the sequences, I will find online resources for a demo.  
 
 # Description: 
 I worked on this as a private github repo. The major tutorial is listed as the README.md file. In the final draft, all scripts will be stored in $ROOT/script/ and example data set will be stored in $ROOT/example. To work through the tutorial, user could simphy specify the directory to their input path to run the example codes and any of their real data: 
@@ -12,19 +13,40 @@ I worked on this as a private github repo. The major tutorial is listed as the R
 # Example codes run in the terminal 
 ./script/assembly_Nanodrop.py --input INPUT_DATA --output OUTPUT_DATA --others OTHER_ARGUMENTS
 ```
-I will design this tutorial assuming the audience has no background knowledge in linux-based system and is new to NGS analysis. The basic workflow is easy. If the user git clone the git repository and run the designed script in a Linux-based system following the steps listed on README.md file. This will automatically analyze any sequencing data the user have. This tutorial will have pre-written scripts which allow the users to simply run the scripts with the input and output folders specifoed to analyze their own data. 
+I will design this tutorial assuming the audience has no background knowledge in linux or perl and the user is new to NGS analysis. The basic workflow is easy. If the user git clone the git repository and run the designed script in a Linux-based system following the steps listed on README.md file. This will automatically analyze any sequencing data the user have. This tutorial will have pre-written scripts which allow the users to simply run the scripts with the input, output folders, and parameters, which allow the user to adjust the settings based on their own data while allowing for a easy workflow. 
 
 Running this tutorial will need to download github. Then, user could git clone the repo and the example and script folders are ready to use: 
 ```
-git clone https://github.com/bingli8899/NGS_pipeline_tutorials.git
+git clone https://github.com/bingli8899/NGS_pipeline_tutorials.git # Now it is private. 
 cd - # move to the GitHub repo, which I will call it $ROOT directory 
 ls ./script/ # This will show scripts in the script folder
 ls ./example/ # This will show all example data in the example folder
 ```
 All codes are designed to be run in the $ROOT directory. 
 
+The structure of this Gitub repo so far: 
+
+```
+$ROOT 
+---script: 
+    dependency_installation.sh
+    software_installation.sh
+    simulation.jl # script to simulation DNA sequences from Seq-Gen -- not useful to users but keep records
+    concatenate.sh
+---example:
+    simulationed_dna:
+        A_R1.fastq, A_R2.fastq
+        B_R1.fastq, B_R2.fastq
+        C_R1.fastq, C_R1.fastq
+        D_R1.fastq, D_R2.fastq
+    grand_truth.tre # ((A,B),C),D) 
+--executable: 
+    Any binary executable that could not be installed via Conda
+
+```
+
 # Basic workflow for NGS analysis
-The basic workflow for NGS analysis including: 1. Quality Control; 2. Assembly; 3. Alignment; 4. Any downstream analysis. For this repo, I will specifically address variant calling as the major downstream analysis. This tutorial will be splitted into those four parts. 
+The basic workflow for NGS analysis including: 1. Quality Control; 2. Assembly; 3. Alignment; 4. Any downstream analysis. For this repo, I will specifically address variant calling (SNP calling) as the major downstream analysis. This main tutorial will be splitted into those four parts. Before that, let's download all required softwares and set up directories. 
 
 # Directory set-up and software installation: 
 First, log into any Linux-based server or using local terminal, and create a directory called ,NGS_tutorials, all operations will be conducted within this ROOT folder. 
@@ -33,11 +55,13 @@ First, log into any Linux-based server or using local terminal, and create a dir
 The easiest way to install all softwares is using Conda with instruction here: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html depending on the operating system: 
 
 Then, run the following codes to create a conda enviroment to run scripts: 
+
+```
 conda create -n "ngs_tutorial"
 conda activate ngs_tutoria
+```
 
-
-Then, run the following codes to install necessary softwares: 
+Then, run the following codes to install necessary softwares. In real reseach, it would be better to keep a good record of how to download the softwares and the software versions:  
 ```
 conda install bioconda::fastqc
 ```
@@ -69,7 +93,7 @@ Then, the installation script using source code (script/software_installation.sh
 ```
 ./script/software_installation.sh
 ``` 
-If there is any problem of running the code, I would suggest to run chunks of codes as separated by the #### in either script to figure out the issues. 
+If there is any problem of running the code, I would suggest to run separate chunks of codes as separated by the #### in either script to figure out the issues. 
 
 # Understand the dataset
 Sequencing raw reads are typically stored in fastq (fq, fq.gz) or sometimes fasta (.fa, .fa.gz) files. Most early stage NGS analysis softwares could recognize the zipped (.gz) format. For paried-read sequences, each sample has two files .R1 (forward sequencing) and .R2 (backward sequencing). 
