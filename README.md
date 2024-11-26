@@ -1,18 +1,31 @@
-# Basic NGS pipelines (for self-use) 
+# BEM 780 Class Project: Basic NGS pipelines for SNP calling 
 
 # Goals of this repo: 
 1) This repo decouments a very basic pipeline for NGS analysis from quality control to downstream analysis including variant calling and SNP detection. 
-2) This pipeline is well-established and could be applicable to wide range of NGS data with modification. However, the example data here presented will use Illumina paired-read with 150 base pair per read. 
+2) This pipeline should be designed as well-established and could be applicable to wide range of NGS data with modification. 
+3) This pipeline assumes that the users have no experience in NGS analysis but have some knowledge in Git and Terminal. 
 
-Note: I will simulate the data with a grand truth relationship ((A,B),C),D) with four taxa and each with 100 genes. I will concatenate the genes and add into random regions in between and suffle the sequences into 150 sequences. By this, I know the actual genes and SNP and can compare the results. In the end, I can compare the grand truth with the assembly tutorial I wrote. Alternatively, if there is not enough time for me to simulate the sequences, I will find online resources for a demo.  
-
-# Description: 
-I worked on this as a private github repo. The major tutorial is listed as the README.md file. In the final draft, all scripts will be stored in $ROOT/script/ and example data set will be stored in $ROOT/example. To work through the tutorial, user could simphy specify the directory to their input path to run the example codes and any of their real data: 
-
+# Before we get started: 
+The tutorial is designed as a github repository, where all scripts will be stored in $ROOT/script/ and example data set will be stored in $ROOT/example. To find this code, run the below code in terminal. If git is not pre-installed, visit this website: https://github.com/git-guides/install-git 
 ```
+git clone https://github.com/bingli8899/BEM780_NGS_tutorials.git
+```
+## Description of the example data 
+Assume that we have six accessions/species/samples, The example data were simulated from a random true species tree. This true species tree is arbitrarily determined as "((A:0.12,B:0.23):0.45,(C:0.34,(D:0.19,(E:0.25,F:0.29):0.31):0.28):0.53);" Then, I simulated 10 gene trees using SimPhy (https://github.com/adamallo/SimPhy/) based on the configuration file in $ROOT/example/simulation/ Here, I specified the rate variation of genes as a log-normal distribution with mean as -1.1 and sigma as 0.2. Then, I used seq-gen to simulate the molecular sequence for each gene, each with 1000 bp, mHKY model with rate heterogeneity as 0.5, transition/transversion ratio as 2, and the state frequency for ACGT as 0.25, 0.25, 0.25, 0.25. Because this is a simple tutorial, all parameters are hard-coded with no replicates. Those parameters are tested mannually so the simulated sequences are not too divergent. To simulate the molecular sequence, the below script could be run: 
+```
+./example/simulation/run_simphy_and_seqgen.sh <executable_folder> <configuration_folder> <output_folder>
+```
+Here, executable_folder is the folder which stores the binary executable for both simphy and seqgen softwares, and configuration_folder is the directory with the configuration file, and output folder is the folder to store the output. To make sure consistent results, both softwares are run in random seed at 1234. 
+
+PS: It is noted that a lot of the codes for simulation are hard-coded in this simulation scripts, including replicate (no replicate), seed, number of genes, and all parameters. My next step for modification is to have customized codes to simulate whatever data the users want to play with. Thus, the user could customize the codes with designes length, rate distribution, number of taxa, seeds, and number of genes. It is also noted that the parameters used in simulation would be better to be estimated from a real dataset. 
+
+I concatenated the resulting nexus files into one alignment and 
+
+
+
 # Example codes run in the terminal 
 ./script/assembly_Nanodrop.py --input INPUT_DATA --output OUTPUT_DATA --others OTHER_ARGUMENTS
-```
+
 I will design this tutorial assuming the audience has no background knowledge in linux or perl and the user is new to NGS analysis. The basic workflow is easy. If the user git clone the git repository and run the designed script in a Linux-based system following the steps listed on README.md file. This will automatically analyze any sequencing data the user have. This tutorial will have pre-written scripts which allow the users to simply run the scripts with the input, output folders, and parameters, which allow the user to adjust the settings based on their own data while allowing for a easy workflow. 
 
 Running this tutorial will need to download github. Then, user could git clone the repo and the example and script folders are ready to use: 
@@ -123,5 +136,7 @@ Note to myself: Need to write the pipeline which could be universal to most data
 # Variant Calling
 Here, I will use BCFtools to conduct variant calling and freebayes for SNP detection. 
 
+
+# Reference:
 
 
