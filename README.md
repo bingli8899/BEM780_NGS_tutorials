@@ -68,21 +68,23 @@ conda create -n "snp_tutorial"
 conda activate snp_tutorial 
 ```
 
-Then, run the following codes to install necessary softwares. In real reseach, it would be better to keep a good record of how to download the softwares and the software versions:  
+Then, run the following codes to install necessary softwares. In real reseach, it would be better to keep a good record of how to download the softwares and the software versions. Here, I mainly used the software samtools (), bowtie2 (Langmead et al. 2012),  bcftools (https://github.com/samtools/bcftools; Danecek et al. 2021). 
 ```
 conda install bioconda::samtools
+conda install bowtie2
+conda install bioconda::bcftools
+```
+If any of those download failed, I would suggest to trouble shoot through conda. 
 
+### Method 2: Use Source codes 
+If conda doesn't work for any reasons, softwares could always be installed through source codes. To explain the basic workflow, create a executables folder first and later we will move all binary executables we need in this folder. Then, download all essemtial softwares and move the binary executables into the executables file. The scripts used in this tutorial are robuest no matter if the user downloaded the softwares through source codes or conda. 
 
-
-conda install bioconda::fastqc
-conda install bioconda::fastp
+If conda failed, I would recommend to check dependencies first. Run the below script to check all dependencies need to be used for downloading through source codes: 
+```
 
 ```
 
-### Method 2: Use Source codes 
-If conda doesn't work for any reasons, softwares could always be installed through source code. To explain the basic workflow, create a executables folder first and later we will move all binary executables we need in this folder. Then, download all essemtial softwares and move the binary executables into the executables file. 
-
-This method is not recommended for first-time SNP calling. I presented my method of downloading through source dependencies in $ROOT/script/dependency_installation.sh and $ROOT/script/software_installation.sh. 
+I presented my method of downloading through source dependencies in $ROOT/script/software_installation.sh. It is noted that I run this code in a online server with Linux system. Depending on the system, the  
 
 ```
 ./script/dependency_installation.sh
@@ -93,20 +95,42 @@ If there is any problem of running the code, I would suggest to run separate chu
 # Quality control 
 The first step of most NGS pipeline is quality control. There are several tools for quality control, including Fastp, Trimommatics, etc. This step trim low-quality reads, remove short reads, remove adaptor sequences, etc. After read trimming, a check procedure using tools FastQC and MultiQC is recommended to double check if the trimmed reads have any issues. FastQC could check the quality of individual sequencing files, while MultiQC could aggregate the quality from multiple FastQC results. 
 
-Typically, quality control procedure is run on fastq or fastq.gz files, because they contain additional sequencing information and quality score. Here, because the example dataset is simulated with no quality score, I won't dig into this process in details. Below I listed the 
+Typically, quality control procedure is run on fastq or fastq.gz files, because they contain additional sequencing information and quality score. Here, because the example dataset is simulated with no quality score, I won't dig into this process in details. Below I listed the potential softwares to be used, how to download them, and github repos for tutorial: 
 
-# Alignment 
-There are two many pipelines and methods to assemble genomes, and I will present the most commonly used method, which used BCFtools, BWA, SamTools and Bowtie to assemble and align the genomes. First, assembly could be classified into three ways: 1) De-novo; 2) Reference-based method, 3) A mixture of de-novo and reference based method. 
+```
+echo "Quality control tool for individual sequencing file: https://github.com/s-andrews/FastQC:" 
+conda install bioconda::fastqc 
 
-Here, I will present the most common and computationally cheap method, reference-based method, to call SNPs. The basic 
+echo "Aggreagte the results from fastqc: https://github.com/MultiQC/MultiQC" 
+conda install bioconda::multiqc  
+
+echo "Quality control tool for triming raw sequencing data: https://github.com/OpenGene/fastp"
+conda install bioconda::fastp
+
+echo "Another quality control tool for trimming raw sequencing data: https://github.com/usadellab/Trimmomatic"
+conda install bioconda::trimmomatic
+```
+
+# Assembly and Alignment 
+There are two many pipelines and methods to assemble genomes, and I will present the most commonly used method, which used BCFtools , SamTools and Bowtie to assemble and align the genomes. First, assembly could be classified into three ways: 1) De-novo; 2) Reference-based method, 3) A mixture of de-novo and reference based method. 
+
+Here, I will present the most common and computationally cheap method, reference-based method, to call SNPs. Here, 
 
 # Variant Calling
 Here, I will use BCFtools to conduct variant calling and freebayes for SNP detection. 
 
 
 # Reference:
-Diego Mallo, Leonardo De Oliveira Martins, David Posada, SimPhy : Phylogenomic Simulation of Gene, Locus, and Species Trees , Systematic Biology, Volume 65, Issue 2, March 2016, Pages 334–344, https://doi.org/10.1093/sysbio/syv082
 Andrew Rambaut, Nicholas C. Grass, Seq-Gen: an application for the Monte Carlo simulation of DNA sequence evolution along phylogenetic trees, Bioinformatics, Volume 13, Issue 3, June 1997, Pages 235–238, https://doi.org/10.1093/bioinformatics/13.3.235
+
+Petr Danecek, James K Bonfield, Jennifer Liddle, John Marshall, Valeriu Ohan, Martin O Pollard, Andrew Whitwham, Thomas Keane, Shane A McCarthy, Robert M Davies, Heng Li
+GigaScience, Volume 10, Issue 2, February 2021, giab008, https://doi.org/10.1093/gigascience/giab008
+
+Diego Mallo, Leonardo De Oliveira Martins, David Posada, SimPhy : Phylogenomic Simulation of Gene, Locus, and Species Trees , Systematic Biology, Volume 65, Issue 2, March 2016, Pages 334–344, https://doi.org/10.1093/sysbio/syv082
+
+Langmead, B., Salzberg, S. Fast gapped-read alignment with Bowtie 2. Nat Methods 9, 357–359 (2012). https://doi.org/10.1038/nmeth.1923
+
+
 
 
 
