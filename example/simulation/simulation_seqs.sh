@@ -6,7 +6,7 @@ EXEC_FOLDER="$1"
 SIMPHY_EXEC="$EXEC_FOLDER/simphy"
 SEQGEN_EXEC="$EXEC_FOLDER/seq-gen"
 CONFIG_DIR="$2"
-CONFIG_FILE="$2/configuration.txt"
+CONFIG_FILE="$2/configuration.txt" # Name of the configuration is hard-coded here. 
 OUTPUT_DIR="$3"
 SEQGEN_OUTPUT_DIR="$OUTPUT_DIR/seqgen-out"
 

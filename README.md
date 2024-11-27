@@ -31,17 +31,20 @@ $ROOT
 ```
 
 ## Description of the example data 
-Below section is a basic description of how I got the example data. For this tutorial, I will use example/example_data/*.fastq.gz . Those are simulated data based on 6 accessions/taxa/samples. I attached the detials about how I simulated the data to the $ROOT/example/README.md (). Basically, if simphy (https://github.com/adamallo/SimPhy; Mallo et al. 2016) and seqgen (https://github.com/rambaut/Seq-Gen; Rambaut et al. 1997) got installed in one executable folder, running the below codes from $ROOT will generate the data: 
+Below section is a basic description of how I got the simulated data under $ROOT/example. For this tutorial, I will use example/example_data/*.fasta.gz . The reason I used simulated data here is because it is relatively small and could be easily run in a local laptop within a few seconds. Drawback of this simulated datset will discussed in below sections. 
+
+Those are simulated data based on 6 accessions/taxa/samples. I attached the detials about how I simulated the data to the $ROOT/example/README.md (). Basically, if simphy (https://github.com/adamallo/SimPhy; Mallo et al. 2016) and seqgen (https://github.com/rambaut/Seq-Gen; Rambaut et al. 1997) got installed in one executable folder, running the below codes from $ROOT will generate the data. 
 
 ```
 chmod +x ./example/simulation/simulation_seqs.sh
 ./example/simulation/simulation_seqs.sh <executable_folder> <configuration_folder> <output_folder>
-
 ```
 Here, I attached the data in the $ROOT/example/example_data already to avoid the processes of installing simphy and seqgen and conducting data format transformation. The six fa.gz files are ready to use.
 
 ## Understand the dataset
-Sequencing raw reads are typically stored in fastq (fq, fq.gz) or sometimes (very rarely) in fasta (.fa, .fa.gz) files. Most early stage NGS analysis softwares could recognize the zipped (.gz) format. For paried-read sequences, each sample has two files .R1 (forward sequencing) and .R2 (backward sequencing). The difference between .fasta file and .fastq file is that fasta files only contain the nucleotide or protein sequences, while fastq files contain more sequencing information such as quality score. Here, because our example data were simulated without quality score. We will start with fa.gz files. 
+Sequencing raw reads are typically stored in fastq (fq, fq.gz) or sometimes (very rarely) in fasta (.fa, .fa.gz) files. Most early stage NGS analysis softwares could recognize the zipped (.gz) format. For paried-read sequences, each sample has two files .R1 (forward sequencing) and .R2 (backward sequencing). The difference between .fasta file and .fastq file is that fasta files only contain the nucleotide or protein sequences, while fastq files contain more sequencing information such as quality score. Here, because our example data were simulated without quality score. We will start with fasta.gz files. 
+
+Most often, users will start with .fastq.gz files, although now fastq.gz files are not applicable since I used simulated data here. 
 
 ```
 
@@ -49,7 +52,7 @@ Sequencing raw reads are typically stored in fastq (fq, fq.gz) or sometimes (ver
 
 
 # Basic workflow for SNP calling 
-The basic workflow for NGS analysis including: 1. Quality Control; 2. Alignment; 3. SNP calling. To run that, let's download the required softwares. 
+The basic workflow for NGS analysis including: 1. Quality Control; 2. Alignment; 3. SNP calling. To run that, let's download the required softwares. This tutorial will focus on alignment and SNP calling. I will briefly discuss the procesure for quality control. 
 
 ## Directory set-up and software installation: 
 First, log into any Linux-based server or using local terminal, and create a directory called ,NGS_tutorials, all operations will be conducted within this $ROOT folder. 
@@ -62,12 +65,13 @@ Then, run the following codes to create a conda enviroment to run scripts. This 
 
 ```
 conda create -n "snp_tutorial"
-conda activate snp_tutoria
+conda activate snp_tutorial 
 ```
 
 Then, run the following codes to install necessary softwares. In real reseach, it would be better to keep a good record of how to download the softwares and the software versions:  
 ```
 conda install bioconda::samtools
+
 
 
 conda install bioconda::fastqc
@@ -87,9 +91,9 @@ This method is not recommended for first-time SNP calling. I presented my method
 If there is any problem of running the code, I would suggest to run separate chunks of codes as separated by the #### in either script to figure out the issues. 
 
 # Quality control 
-After downloading necessary softwares, there are several tools for quality control, including FastQC & MultiQC, Fastp, Trimommatics. This step trim low-quality reads, remove short reads, remove adaptor sequences, etc. After read trimming, a check procedure is recommended to double check if the trimmed reads have any issues. 
+The first step of most NGS pipeline is quality control. There are several tools for quality control, including Fastp, Trimommatics, etc. This step trim low-quality reads, remove short reads, remove adaptor sequences, etc. After read trimming, a check procedure using tools FastQC and MultiQC is recommended to double check if the trimmed reads have any issues. FastQC could check the quality of individual sequencing files, while MultiQC could aggregate the quality from multiple FastQC results. 
 
-I will trim low-quality reads using fastp and checked the quality using FastQC and aggregate the results using MultiQC. (Reminder: This should be written is three bash script which takes arguments from the softwares but can process multiple samples through loops. The reason to design those scripts is to allow user with no experience in bash loop to multi-process bioinformatic pipeline in parallel).
+Typically, quality control procedure is run on fastq or fastq.gz files, because they contain additional sequencing information and quality score. Here, because the example dataset is simulated with no quality score, I won't dig into this process in details. Below I listed the 
 
 # Alignment 
 There are two many pipelines and methods to assemble genomes, and I will present the most commonly used method, which used BCFtools, BWA, SamTools and Bowtie to assemble and align the genomes. First, assembly could be classified into three ways: 1) De-novo; 2) Reference-based method, 3) A mixture of de-novo and reference based method. 
