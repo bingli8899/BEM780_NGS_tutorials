@@ -11,7 +11,7 @@ What are the goals of the tutorial?
 2) This pipeline assumes that the users have no experience in NGS analysis but have some knowledge in Linux/Bash and Git. 
 3) The tutorial presents the basic workflow for SNP calling including: 1. Quality Control; 2. Assembly and Alignment; 3. SNP calling. 4. Downstream analysis. Below is a picture to show the worklow: 
 
-![Alt text](./example/p1 "Workflow for Variant Calling")
+![Alt text](./example/p1.png "Workflow for Variant Calling")
 
 How to use this tutorial? 
 The tutorial is designed as a github repository, where all scripts will be stored in $ROOT/script/ and example data set will be stored in $ROOT/example. $ROOT is the top directory of this repo. *It is noted that all codes are designed to be run in the $ROOT directory.* If git is not pre-installed, visit this website: https://github.com/git-guides/install-git 
