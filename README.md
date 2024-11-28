@@ -1,11 +1,17 @@
 # BEM 780 Class Project: Basic NGS pipelines for variant calling 
-Variant calling is the process of identifying genetic variations, such as single nucleotide polymorphisms (SNPs) or insertions/deletions (indels), in an individual's DNA by comparing sequencing data to a reference genome. This tutorial/repo present a basic pipeline of variant calling from DNA raw reads to visualization of the variant calling. 
+
+# Introduction: 
+Variant calling is a key bioinformatics process that identifies genetic variations, such as single nucleotide polymorphisms (SNPs), insertions, and deletions, by comparing DNA sequencing data to a reference genome. These genetic variations are fundamental to understanding how genomes differ within and between populations, influencing traits, diseases, and evolutionary processes. By pinpointing these variations, researchers can explore genetic diversity, uncover disease mechanisms, and guide advancements in precision medicine, agriculture, and conservation.
+
+This technique is widely used in fields like human genomics, cancer research, and evolutionary biology. For instance, it aids in linking genetic variants to traits in genome-wide association studies (GWAS), identifying mutations in cancer for targeted treatments, and tracking genetic changes in pathogens. Despite its importance, variant calling can be challenging due to factors like sequencing quality and computational complexity, making it essential to apply rigorous quality control and validation. Ultimately, variant calling serves as a cornerstone for genomic research, unlocking insights into the genetic basis of biological diversity and disease.
 
 # Basic overview: 
 What are the goals of the tutorial? 
 1) This repo decouments a very basic pipeline for NGS analysis from quality control to variant calling. 
 2) This pipeline assumes that the users have no experience in NGS analysis but have some knowledge in Linux/Bash and Git. 
-3) The tutorial presents the basic workflow for SNP calling including: 1. Quality Control; 2. Assembly and Alignment; 3. SNP calling. 4. Downstream analysis
+3) The tutorial presents the basic workflow for SNP calling including: 1. Quality Control; 2. Assembly and Alignment; 3. SNP calling. 4. Downstream analysis. Below is a picture to show the worklow: 
+
+![Alt text](./example/p1 "Workflow for Variant Calling")
 
 How to use this tutorial? 
 The tutorial is designed as a github repository, where all scripts will be stored in $ROOT/script/ and example data set will be stored in $ROOT/example. $ROOT is the top directory of this repo. *It is noted that all codes are designed to be run in the $ROOT directory.* If git is not pre-installed, visit this website: https://github.com/git-guides/install-git 
