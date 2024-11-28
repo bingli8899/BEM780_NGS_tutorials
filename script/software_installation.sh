@@ -3,10 +3,8 @@
 # The script that download and install all softwares 
 # Run this script by ./script/software_installation.sh in the $ROOT folder 
 # It will move all executables to a executables folder after installation 
-executable_dir = $1
 
-
-mkdir -p "$executable_dir"
+mkdir -p executables
 mkdir -p downloaded_softwares && cd downloaded_softwares
 
 ### Download SamTools 
@@ -18,17 +16,28 @@ rm *.tar*
 cd samtools*
 ./configure
 make
-cd ../../"$executable_dir"
+cd ../../executables
 ln -s ../downloaded_softwares/samtools*/samtools
 
-if ./samtools --help > /dev/null 2>&1; then
-    echo "Samtools is installed and working correctly. Stop and check for installation."
-else
-    echo "OH NO, samtool is not installed! Check the scripts and error messages please!"
-fi
+./script/check_command.sh samtools
 
-### Download Bowtie2 
- 
+### Download bcftools 
+cd ../downloaded_softwares
+wget https://github.com/samtools/bcftools/releases/download/1.21/bcftools-1.21.tar.bz2 
+# Again, the version could be changed to the newest version 
+tar -xf bcftools*
+rm *tar*
+cd bcftools*
+./configure
+make
+cd ../../executables
+ln -s ../downloaded_softwares/bcftools*/bcftools 
+
+## Download Bowtie2 
+
+
+
+
 
 
 
