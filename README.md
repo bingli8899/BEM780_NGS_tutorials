@@ -18,7 +18,7 @@ What are the goals of the tutorial?
 2) This pipeline assumes that the users have no experience in NGS analysis but have some basic knowledge in Linux/Bash and Git. 
 
 3) The tutorial contains several parts: 
-    1. How to get started: *This section discussed basic prompts and structure of the repository.*
+    1. How to get started: *This section discussed basic prompts and structure of the repository and anything the user needs to know before using the tutorial*
     2. Software installation: *This step walked through how to install the softwares.* 
     3. Description of the example data: *This part presents two datasest (simulated and real human datasets) to be used.* 
     4. Variant calling pipeline: *After all the preparation work, section 4 presents how variant calling pipeline is conducted*
@@ -29,10 +29,28 @@ What are the goals of the tutorial?
     6. References 
 
 # How to get started? 
-The tutorial was designed as a github repo, where all scripts will be stored in $ROOT/script/ and example data set will be stored in $ROOT/example. $ROOT is the top directory of this repo. *It is noted that all codes are designed to be run in the $ROOT directory.* Below shows the structure of this repo: 
 
-$ROOT
-The top-level directory containing all project files. All scripts should be executed from this directory.
+### Basic prompt overview: 
+*You should skip this part if you know basic git and command line prompt*
+To start this tutorial, let's discuss some very basic command line prompts used in this tutorial.
+```
+pwd # -- print the path for the current directory 
+cd # -- change to a directory. Here, "./" is the current directory, and "../" is the directory above. 
+mkdir # -- create a directory
+chmod +x # -- change a binary file to a executable file
+```
+This tutorial also utilizes Git/GitHub, and here are useful information for basic git command: https://github.com/joshnh/Git-Commands. If git is not pre-installed, visit this website: https://github.com/git-guides/install-git 
+
+### Get started and download this Github Repo
+Ready? Now, let's officially start the tutorial! First, the below code in Linux/Terminal, which will download all the codes and example files to be used into the local directory you chose: 
+```
+git clone https://github.com/bingli8899/BEM780_NGS_tutorials.git
+cd BEM780_NGS_tutorials # This is our $ROOT directory 
+```
+
+While you are checking the downloaded repo, let's discuss the basic structure of this repo! 
+### Repo structure: 
+The tutorial was designed as a github repo, where all scripts will be stored in $ROOT/script/ and example data set will be stored in $ROOT/example. $ROOT is the top directory of this repo. *It is noted that all codes are designed to be run in the $ROOT directory.* Below shows the structure of this repo from $ROOT: 
 
 - **[script/](script/)**  
   Contains all scripts necessary for running the workflow:  
@@ -53,42 +71,41 @@ The top-level directory containing all project files. All scripts should be exec
     - `reference.fasta`  
   - **simulation/**  
     Files and scripts for running simulations:  
-    - `configuration.txt` 
-    - `simulation_seqs.sh`  
+    - `configuration.txt` (example/simulation/configuration.txt) 
+    - `simulation_seqs.sh` (example/simulation/simulation_seqs.sh) 
 
-To start this tutorial, let's discuss some very basic command line prompts used in this tutorial: 
-```
-pwd # -- print the path for the current directory 
-cd # -- change to a directory. Here, "./" is the current directory, and "../" is the directory above. 
-mkdir # -- create a directory
-```
-This tutorial also utilizes Git/GitHub, and here are useful information for basic git command: https://github.com/joshnh/Git-Commands. *If git is not pre-installed, visit this website: https://github.com/git-guides/install-git* 
+### How to run a script: 
+To execute a script, provide the necessary user-defined arguments to generate the desired output. In this tutorial's scripts, I wrote the script so that you can specify parameters such as the number of threads (CPUs), input directory, and output directory. These scripts will then automatically perform the analysis based on your inputs. Throughout this guide, placeholders like <argument> indicate where you should insert your specific values.
 
-Ready? Now, let's get started! 
+Example:
 
-Run the below code in Linux/Terminal: 
 ```
-git clone https://github.com/bingli8899/BEM780_NGS_tutorials.git
-cd BEM780_NGS_tutorials # This is our $ROOT directory 
-ls ./script/ # This will show scripts in the script folder
-ls ./example/ # This will show all example data in the example folder
+# Usage: quality_control.sh <input_directory> <number_of_threads> <output_directory>
 ```
+Replace <input_directory>, <number_of_threads>, and <output_directory> with your actual input directory path, desired number of CPU threads, and output directory path, respectively (see examples in this tutorial). These scripts are designed to process any datasets, not just the example data provided. Therefore, by specifying your own input and output directories, you can apply the analysis to your research data.
 
+Note: Ensure that the specified input directory contains the appropriate data files required for the analysis.
 
 # Software installation: 
+Surprisingly, installing software is often one of the most challenging steps of working with NGS data. Errors from configuration issues and version incompatibilities between dependencies can be overwhelming. This tutorial provides *two methods* for software installation. 
 
-There are two methods to install softwares:
+The first method involves using Conda, which is open-source, cross-platform package and environment management tool that simplifies the installation and management of software packages and their dependencies. The second method demonstrates how to install software from source code, which involves manually compiling the program's code on your system.
+
+For first-time or beginner Linux users, I highly recommend starting with Method 1 (Conda), as it simplifies dependency and package management. If this approach fails, you can then proceed to Method 2, which involves installing the software directly from source code.
 
 ### Method 1: Use Conda 
-The easiest way to install all softwares is to use Conda (Instruction here: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). The below code creates a conda environment to work on and requires to re-activate the conda enviroments each time to resume the work: 
+I intentionally chose all softwares that could be easily installed through conda (Instruction here: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). 
 
+To get started, the below code creates a conda environment named "snp_tutorial", which is an isolated environment that has a specific collection of packages and their dependencies, allowing you to manage multiple projects with distinct requirements on the same system. 
+
+Run the code to create and activate the conda enviroments: 
 ```
-conda create -n "snp_tutorial"
+conda create -n "snp_tutorial" 
 conda activate snp_tutorial 
 ```
+PS: 1. You might need to type in "Y" to proceed with running the above code. 2. Make sure to deactivate the conda environment after you are done with this tutorial. 3. Makre sure you re-active the environment if you want to resume back to your previous work. 
 
-Then, run the following codes to install necessary softwares. In real reseach, it would be better to keep a good record of how to download the softwares and the software versions. Here, I mainly used the software samtools (https://github.com/samtools/samtools; Danecek et al. 2021), bowtie2 (https://github.com/BenLangmead/bowtie2; Langmead et al. 2012),  bcftools (https://github.com/samtools/bcftools; Danecek et al. 2021) for variant calling, fastp, multiqc and fastqc for quality trimming, sra-tools for data downloading, and seqtk for format transitioning. 
-
+Then, run the following codes to install necessary softwares. In real reseach, it would be better to keep a good record of how you downloaded the softwares and the software versions. 
 ```
 conda install bioconda::samtools
 conda install bowtie2
@@ -99,19 +116,40 @@ conda install bioconda::fastp
 conda install bioconda::sra-tools 
 conda install bioconda::seqtk
 ```
+Note: You might need to type in "Y" to proceed with running the above code. 
+
+Here, I mainly used the softwares: 
+    1. Process sequencing reads and transitioning between file types: samtools (https://github.com/samtools/samtools; Danecek et al. 2021)
+    2. Aligning sequencing with the reference: bowtie2 (https://github.com/BenLangmead/bowtie2; Langmead et al. 2012)  
+    3. Variant calling and transitioning between file types: bcftools (https://github.com/samtools/bcftools; Danecek et al. 2021)
+    4. Quality control for raw reads: fastp (https://github.com/OpenGene/fastp; Chen et al. 2018) 
+    5. Check the results from quality control: multiqc (https://github.com/MultiQC/MultiQC) and fastqc (https://github.com/s-andrews/FastQC)
+    6. Download data from SRA: sra-tools (https://github.com/ncbi/sra-tools)
+    7. Utility usage for format transitioning: seqtk (https://github.com/lh3/seqtk)
+
 If any of those download failed, I would suggest to trouble shoot through conda or install with source codes (see below). 
 
 ### Method 2: Use Source codes 
-If conda doesn't work for any reasons, softwares could always be installed through source codes. To explain the basic workflow, create a executables folder first and later we will move all binary executables we need in this folder. Then, download all essemtial softwares and move the binary executables into the executables file. 
+If conda doesn't work for any reasons, softwares could always be installed through source codes. To explain the basic workflow, create a executables folder ($ROOT/executables) first and later we will move all binary executables we need in this folder. Then, download all essemtial softwares and move the binary executables into the executables file. 
 
 If conda failed and softwares need to installed through source codes, I would recommend to check dependencies first. Run the below script to check if all dependencies are installed: 
+
 ```
-chmod +x script/check_command.sh
 # Usage: check_command.sh <command>
+chmod +x script/check_command.sh # This could be skipped depending on the system 
 script/check_command.sh gcc
 script/check_command.sh cmake
-``` 
-I also presented part of my method to download through source dependencies in $ROOT/script/software_installation.sh. It is noted that I tested this code in a online server with Linux system. Depending on the system, the codes (./script/software_installation.sh) may need to be modified. If there is any problem of running the code, I would suggest to run separate chunks of codes as separated by the ### in either script to figure out the issues. 
+```
+This last command would generate "cmake is installed. Version: cmake version 3.30.5" in my Mac. This tells you the command got installed and which versions it is. 
+
+If the command is not installed, then it will print out and warn the user to install the command. 
+```
+script/check_command.sh FakeCommand
+# Print out: FakeCommand is not installed. 
+```
+The user should check the dependencies installed in their system first and then proceed to install softwares.  
+
+To install the actual software, I presented part of my method to download through source dependencies in $ROOT/script/software_installation.sh. It is noted that I tested this code in a online server with Linux system. Depending on the system, the codes (./script/software_installation.sh) may need to be modified. If there is any problem of running the code, I would suggest to run separate chunks of codes as separated by the ### in either script to figure out the issues. 
 
 # Description of the example data 
 This tutorial uses two sets of data, simulated data and real human data. 
@@ -128,7 +166,7 @@ chmod +x ./example/simulation/simulation_seqs.sh
 ```
 Here, the five simulated fasta files are ready to use in $ROOT/example/example_data. 
 
-#### Real Huma data 
+#### Real Human data 
 Let's work on some real human data as well. The below steps show how to download read human data from online resouces: 
 
 Download the reference: 
@@ -137,10 +175,14 @@ mkdir -p example/human_data && cd example/human_data
 wget ftp://ftp.ensembl.org/pub/release-113/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 gunzip Homo*
 ```
-Download the raw reads:
+This downaloded and unzipped a humen genome (), which will be used as the refernece genome for variant calling. This is often refered as the Genome Reference Consortium Human Build 38 (hg38), which is the primary assembly including the complete sequence of human chromosomes and often used as a reference for human genomic study. 
+
+Then, let's download some raw reads:
 ``` 
+num_threads=$(nproc --all) 
+echo $num_threads 
 prefetch SRR098401
-fastq-dump --split-files --gzip SRR098401ra 
+fastq-dump --split-files --gzip SRR098401ra --threads $num_threads 
 ```
 The above code might be slow. If that's the case, run the below code after "prefetch" to only extract 100000 bases: 
 ```
@@ -207,6 +249,8 @@ The above code will give a text view to view the actual results from variant cal
 
 # Reference:
 Andrew Rambaut, Nicholas C. Grass, Seq-Gen: an application for the Monte Carlo simulation of DNA sequence evolution along phylogenetic trees, Bioinformatics, Volume 13, Issue 3, June 1997, Pages 235–238, https://doi.org/10.1093/bioinformatics/13.3.235
+
+Shifu Chen, Yanqing Zhou, Yaru Chen, Jia Gu; fastp: an ultra-fast all-in-one FASTQ preprocessor, Bioinformatics, Volume 34, Issue 17, 1 September 2018, Pages i884–i890, https://doi.org/10.1093/bioinformatics/bty560
 
 Petr Danecek, James K Bonfield, Jennifer Liddle, John Marshall, Valeriu Ohan, Martin O Pollard, Andrew Whitwham, Thomas Keane, Shane A McCarthy, Robert M Davies, Heng Li
 GigaScience, Volume 10, Issue 2, February 2021, giab008, https://doi.org/10.1093/gigascience/giab008
