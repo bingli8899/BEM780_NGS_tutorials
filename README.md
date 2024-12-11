@@ -1,37 +1,79 @@
-# BEM 780 Class Project: Basic NGS pipelines for variant calling 
+# BEM 780 Class Project: Basic pipelines for variant calling 
 
 # Introduction: 
-Variant calling is a key bioinformatics process that identifies genetic variations, such as single nucleotide polymorphisms (SNPs), insertions, and deletions, by comparing DNA sequencing data to a reference genome. These genetic variations are fundamental to understanding how genomes differ within and between populations, influencing traits, diseases, and evolutionary processes. By pinpointing these variations, researchers can explore genetic diversity, uncover disease mechanisms, and guide advancements in precision medicine, agriculture, and conservation.
+Next-generation sequencing (NGS) is a high-throughput technology that allows for the parallel sequencing of millions of DNA or RNA fragments, providing comprehensive insights into genetic material. Data generated from NGS can go through many different pipeline to extract useful information. Among all potential pipelines, variant calling is a key bioinformatics process that identifies genetic variations, such as single nucleotide polymorphisms (SNPs), insertions, and deletions, by comparing DNA sequencing data to a reference genome. These genetic variations are fundamental to understanding how genomes differ within and between populations, influencing traits, diseases, and evolutionary processes. By pinpointing these variations, researchers can explore genetic diversity, uncover disease mechanisms, and guide advancements in precision medicine, agriculture, and conservation.
 
 This technique is widely used in fields like human genomics, cancer research, and evolutionary biology. For instance, it aids in linking genetic variants to traits in genome-wide association studies (GWAS), identifying mutations in cancer for targeted treatments, and tracking genetic changes in pathogens. Despite its importance, variant calling can be challenging due to factors like sequencing quality and computational complexity, making it essential to apply rigorous quality control and validation. Ultimately, variant calling serves as a cornerstone for genomic research, unlocking insights into the genetic basis of biological diversity and disease.
 
-# Basic overview: 
-What are the goals of the tutorial? 
-1) This repo decouments a very basic pipeline for NGS analysis from quality control to variant calling. 
-2) This pipeline assumes that the users have no experience in NGS analysis but have some knowledge in Linux/Bash and Git. 
-3) The tutorial presents the basic workflow for SNP calling including: 1. Quality Control; 2. Assembly and Alignment; 3. SNP calling. 4. Downstream analysis. Below is a picture to show the worklow: 
+This tutorial provides a basically pipeline to analyze NGS data from raw sequencing reads to visualization of variant calling, be integrating a reference genome. The scripts developed for this tutorial could be applied to other dataset besides the example data. A basic variant calling which contains the following steps: 1. Quality Control; 2. Assembly and Alignment; 3. variant calling. 4. Downstream analysis, which is shown in the figure below:  
 
 ![Alt text](./example/p1.png "Workflow for Variant Calling")
 
-How to use this tutorial? 
-The tutorial is designed as a github repository, where all scripts will be stored in $ROOT/script/ and example data set will be stored in $ROOT/example. $ROOT is the top directory of this repo. *It is noted that all codes are designed to be run in the $ROOT directory.* If git is not pre-installed, visit this website: https://github.com/git-guides/install-git 
+This tutorial will start with raw sequencing data and discusses each of the step above. For downstream analysis, it depends on the real research question so this tutorial will only present how to visualize the variant calling results. 
 
-To start this tutorial, run the below code in Linux/Terminal: 
+# Basic overview: 
+What are the goals of the tutorial? 
+1) This repository (repo) decouments a very basic pipeline for NGS analysis from quality control to variant calling. 
+
+2) This pipeline assumes that the users have no experience in NGS analysis but have some basic knowledge in Linux/Bash and Git. 
+
+3) The tutorial contains several parts: 
+    1. How to get started: *This section discussed basic prompts and structure of the repository.*
+    2. Software installation: *This step walked through how to install the softwares.* 
+    3. Description of the example data: *This part presents two datasest (simulated and real human datasets) to be used.* 
+    4. Variant calling pipeline: *After all the preparation work, section 4 presents how variant calling pipeline is conducted*
+        4.1 Quality control: 
+        4.2 Assembly and Alignment 
+        4.3 Visualize variant calling results 
+    5. Conclusion     
+    6. References 
+
+# How to get started? 
+The tutorial was designed as a github repo, where all scripts will be stored in $ROOT/script/ and example data set will be stored in $ROOT/example. $ROOT is the top directory of this repo. *It is noted that all codes are designed to be run in the $ROOT directory.* Below shows the structure of this repo: 
+
+$ROOT
+The top-level directory containing all project files. All scripts should be executed from this directory.
+
+- **[script/](script/)**  
+  Contains all scripts necessary for running the workflow:  
+  - [alignment_variant_calling.sh](script/alignment_variant_calling.sh)  
+    Main script for alignment and variant calling.  
+  - [check_command.sh](script/check_command.sh)  
+    Utility script to verify if required commands is installed.  
+  - [quality_control.sh](script/quality_control.sh)  
+    Script for performing quality control on input data.  
+  - [software_installation.sh](script/software_installation.sh)  
+    Script for installing required software.
+
+- **[example/](example/)**  
+  Contains example files and data for testing and simulation:  
+  - **simulated_data/**  
+    Example input files, including:  
+    - `A.fasta`, `B.fasta`, ... `E.fasta`  
+    - `reference.fasta`  
+  - **simulation/**  
+    Files and scripts for running simulations:  
+    - `configuration.txt` 
+    - `simulation_seqs.sh`  
+
+To start this tutorial, let's discuss some very basic command line prompts used in this tutorial: 
+```
+pwd # -- print the path for the current directory 
+cd # -- change to a directory. Here, "./" is the current directory, and "../" is the directory above. 
+mkdir # -- create a directory
+```
+This tutorial also utilizes Git/GitHub, and here are useful information for basic git command: https://github.com/joshnh/Git-Commands. *If git is not pre-installed, visit this website: https://github.com/git-guides/install-git* 
+
+Ready? Now, let's get started! 
+
+Run the below code in Linux/Terminal: 
 ```
 git clone https://github.com/bingli8899/BEM780_NGS_tutorials.git
-cd - # move to the GitHub repo, which I will call it $ROOT directory 
+cd BEM780_NGS_tutorials # This is our $ROOT directory 
 ls ./script/ # This will show scripts in the script folder
 ls ./example/ # This will show all example data in the example folder
 ```
 
-What's the basic workflow? 
-The tutorial contains several parts: 
-    1. Software installation: This step walked through how to install the softwares. 
-    2. Description of the example data: This part presents two datasest (simulated and real human datasets) to be used. 
-    3. Quality control
-    4. Assembly and Alignment 
-    5. Visualize variant calling results 
-    6. References 
 
 # Software installation: 
 
