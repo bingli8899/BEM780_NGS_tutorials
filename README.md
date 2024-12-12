@@ -215,9 +215,8 @@ less example/human_data/SRR098401_1.fastq.gz
 ```
 The beginning of this file still contains a lots of missing "N", which is very common for sequencing data. Type in "g" and the type in 100000, and you will find the below view: 
 
-```
 ![Alt text](./figures/p4.png "fastq file 100000th position") 
-```
+
 Clearly, the fastq files look very different than fastq file. Not only it contains the actuall seuqnce. It contains the name of the sample (SRR098401), a unique sequence ID followed after the sample name (25006), metadata (8099ABXX101220:5:1:17260:3096), and the length of the read (length = 76). The actual sequence is samed as the next line. After that, the line with "+" is simply a separator between the nucleotide sequence and the quality scores. The line after the separator shows the quality score, which tells the confidence of the sequencing. 
 
 Quality control softwares utilized the information in the sequencing and the quality score of fastq.gz and fastq files, to determine which parts or reads should be trimmed. In the below section, we will dive into how to do quality control. 
@@ -241,7 +240,9 @@ The above code should output "Oyay! Outputs are in ./human_results.", which mean
 num_threads=$(nproc --all) 
 quality_control.sh example/human_data $num_threads /example/human_cleaned
 ```
-The third argument specifies the output directory. This above code will generate a $ROOT/example/human_cleaned directory and stores all the results. Now, in the output directory $ROOT/example/human_cleaned, there are three output directories. $ROOT/example/human_cleaned contain the cleaned reads trimmed from fastp. $ROOT/example/human_cleaned/fastqc and $ROOT/example/human_cleaned/multiqc stored the results of quality control files. Intermediate files from fastp are stored in $ROOT/example/human_cleaned/.  
+The third argument specifies the output directory. This above code will generate a $ROOT/example/human_cleaned directory and stores all the results, including the cleaned reads and the statistics from quality control. 
+
+Now, in the output directory $ROOT/example/human_cleaned, there are three output directories. $ROOT/example/human_cleaned/cleaned contain the cleaned reads trimmed from fastp. $ROOT/example/human_cleaned/fastqc and $ROOT/example/human_cleaned/multiqc stored the results of quality control files. 
 
 It is highly recommended to check the *.html results from  $ROOT/human_results/fastqc and $ROOT/human_results/multiqc. Details about how to check the results from fastqc and multiqc are attached here: https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/lessons/qc_fastqc_assessment.html. 
 
