@@ -1,11 +1,11 @@
 # BEM 780 Class Project: Basic pipelines for variant calling 
 
 # Introduction: 
-Next-generation sequencing (NGS) is a high-throughput technology that allows for the parallel sequencing of millions of DNA or RNA fragments, providing comprehensive insights into genetic material. Data generated from NGS can go through many different pipeline to extract useful information. Among all potential pipelines, variant calling is a key bioinformatics process that identifies genetic variations, such as single nucleotide polymorphisms (SNPs), insertions, and deletions, by comparing DNA sequencing data to a reference genome. These genetic variations are fundamental to understanding how genomes differ within and between populations, influencing traits, diseases, and evolutionary processes. By pinpointing these variations, researchers can explore genetic diversity, uncover disease mechanisms, and guide advancements in precision medicine, agriculture, and conservation.
+Next-generation sequencing (NGS) is a high-throughput technology that allows for the parallel sequencing of millions of DNA or RNA fragments, providing comprehensive insights into genetic material. Data generated from NGS can go through many different pipelines to extract useful information. Among all potential pipelines, variant calling is a key bioinformatics process that identifies genetic variations, such as single nucleotide polymorphisms (SNPs), insertions, and deletions, by comparing DNA sequencing data to a reference genome. These genetic variations are fundamental to understanding how genomes differ within and between populations, influencing traits, diseases, and evolutionary processes. By pinpointing these variations, researchers can explore genetic diversity, uncover disease mechanisms, and guide advancements in precision medicine, agriculture, and conservation.
 
 This technique is widely used in fields like human genomics, cancer research, and evolutionary biology. For instance, it aids in linking genetic variants to traits in genome-wide association studies (GWAS), identifying mutations in cancer for targeted treatments, and tracking genetic changes in pathogens. Despite its importance, variant calling can be challenging due to factors like sequencing quality and computational complexity, making it essential to apply rigorous quality control and validation. Ultimately, variant calling serves as a cornerstone for genomic research, unlocking insights into the genetic basis of biological diversity and disease.
 
-This tutorial provides a basically pipeline to analyze NGS data from raw sequencing reads to visualization of variant calling, be integrating a reference genome. The scripts developed for this tutorial could be applied to other dataset besides the example data. A basic variant calling which contains the following steps: 1. Quality Control; 2. Assembly and Alignment; 3. variant calling. 4. Downstream analysis, which is shown in the figure below:  
+This tutorial provides a basic pipeline to analyze NGS data from raw sequencing reads to visualizing variant calling by integrating a reference genome. The scripts developed for this tutorial could be applied to other datasets besides the example data. A basic variant calling pipeline contains the following steps: 1. Quality Control; 2. Assembly and Alignment; 3. variant calling. 4. Downstream analysis, which is shown in the figure below:  
 
 ![Alt text](./figures/p1.png "Workflow for Variant Calling")
 
@@ -13,15 +13,15 @@ This tutorial will start with raw sequencing data and discusses each of the step
 
 # Basic overview: 
 What are the goals of the tutorial? 
-1) This repository (repo) decouments a very basic pipeline for NGS analysis from quality control to variant calling. 
+1) This repository (repo) documents a very basic pipeline for NGS analysis from quality control to variant calling. 
 
 2) This pipeline assumes that the users have no experience in NGS analysis but have some basic knowledge in Linux/Bash and Git. 
 
-3) The tutorial contains several parts: 
+3) The tutorial contains the following sections:
     1. How to get started: *This section discussed basic prompts and structure of the repository and anything the user needs to know before using the tutorial*
     2. Software installation: *This step walked through how to install the softwares.* 
     3. Description of the example data: *This part presents two datasest (simulated and real human datasets) to be used.* 
-    4. Variant calling pipeline: *After all the preparation work, section 4 presents how variant calling pipeline is conducted*
+    4. Variant calling pipeline: *After all the preparation work, section 4 presents how the variant calling pipeline is conducted*
         4.1 Quality control: 
         4.2 Assembly and Alignment 
         4.3 Visualize variant calling results 
@@ -37,7 +37,7 @@ To start this tutorial, let's discuss some very basic command line prompts used 
 pwd # -- print the path for the current directory 
 cd # -- change to a directory. Here, "./" is the current directory, and "../" is the directory above. 
 mkdir # -- create a directory
-chmod +x # -- change a binary file to a executable file
+chmod +x # -- change a binary file to an executable file
 ```
 This tutorial also utilizes Git/GitHub, and here are useful information for basic git command: https://github.com/joshnh/Git-Commands. If git is not pre-installed, visit this website: https://github.com/git-guides/install-git 
 
@@ -57,7 +57,7 @@ The tutorial was designed as a github repo, where all scripts will be stored in 
   - [alignment_variant_calling.sh](script/alignment_variant_calling.sh)  
     Main script for alignment and variant calling.  
   - [check_command.sh](script/check_command.sh)  
-    Utility script to verify if required commands is installed.  
+    Utility script to verify if required commands are installed.  
   - [quality_control.sh](script/quality_control.sh)  
     Script for performing quality control on input data.  
   - [software_installation.sh](script/software_installation.sh)  
@@ -100,14 +100,14 @@ I intentionally chose all softwares that could be easily installed through conda
 
 To get started, the below code creates a conda environment named "snp_tutorial", which is an isolated environment that has a specific collection of packages and their dependencies, allowing you to manage multiple projects with distinct requirements on the same system. 
 
-Run the code to create and activate the conda enviroments: 
+Run the code to create and activate the conda environments: 
 ```
 conda create -n "snp_tutorial" 
 conda activate snp_tutorial 
 ```
-PS: 1. You might need to type in "Y" to proceed with running the above code. 2. Make sure to deactivate the conda environment after you are done with this tutorial. 3. Makre sure you re-active the environment if you want to resume back to your previous work. 
+PS: 1. You might need to type in "Y" to proceed with running the above code. 2. Make sure to deactivate the conda environment after you are done with this tutorial. 3. Make sure you reactivate the environment if you want to resume back to your previous work. 
 
-Then, run the following codes to install necessary softwares. In real reseach, it would be better to keep a good record of how you downloaded the softwares and the software versions. Most of the conda-installed softwares are NOT the most recent version.  
+Then, run the following codes to install necessary softwares. In real research, it would be better to keep a good record of how you downloaded the softwares and the software versions. Most of the conda-installed software is NOT the most recent version.  
 ```
 conda install bioconda::samtools
 conda install bowtie2
@@ -132,9 +132,9 @@ Here, I mainly used the softwares:
 If any of those download failed, I would suggest to trouble shoot through conda or install with source codes (see below). 
 
 ### Method 2: Use Source codes 
-If conda doesn't work for any reasons, softwares could always be installed through source codes. To explain the basic workflow, create a executables folder ($ROOT/executables) first and later we will move all binary executables we need in this folder. Then, download all essemtial softwares and move the binary executables into the executables file. 
+If conda doesn't work for any reasons, softwares could always be installed through source codes. To explain the basic workflow, create a executables folder ($ROOT/executables) first and later we will move all binary executables we need in this folder. Then, download all essential softwares and move the binary executables into the executable folder. 
 
-If conda failed and softwares need to installed through source codes, I would recommend to check dependencies first. Run the below script to check if all dependencies are installed: 
+If conda failed and softwares need to be installed through source codes, I would recommend to check dependencies first. Run the below script to check if all dependencies are installed: 
 
 ```
 # Usage: check_command.sh <command>
@@ -154,9 +154,9 @@ The user should check the dependencies installed in their system first and then 
 To install the actual software, I presented part of my method to download through source dependencies in $ROOT/script/software_installation.sh. It is noted that I tested this code in a online server with Linux system (x86_64bit). To check the Linux system you are running, run "uname -m" as the command line. Depending on the system, the codes (./script/software_installation.sh) may need to be modified. If there is any problem of running the code, I would suggest to run separate chunks of codes as separated by the ### in either script to figure out the issues. 
 
 # Section 3: Description of the example data 
-This tutorial worked through real human data to represent the pipeline. By conducting variant calling to the human data, we can understand what is the genetic difference between the reference genome and our dataset. Those genetic variants could be used for downstream analysis to call for single nucleotide variants, insertions and deletions , and structural variants. 
+This tutorial worked through real human data to represent the pipeline. By conducting variant calling to the human data, we can understand the genetic difference between the reference genome and our dataset. Those genetic variants could be used for downstream analysis to call for single nucleotide variants, insertions and deletions , and structural variants. 
 
-This tutorial also utilized some simulated data to test codes, because simulated dataset are smaller and could be run quickly. The description of the simulated dataset and its corresponding dataset are presented in **[example/simulated_data](example/simulated_data/)**. Details about this simulated dataset will not be presented along this tutorial. 
+This tutorial also utilized some simulated data to test codes, because the simulated datasets are smaller and could be run quickly. The description of the simulated dataset and its corresponding dataset are presented in **[example/simulated_data](example/simulated_data/)**. Details about this simulated dataset will not be presented along this tutorial. 
 
 ### Let's download the example data from SRA 
 Sequence Read Archive (SRA) data, available through multiple cloud providers and NCBI servers, is the largest publicly available repository for raw sequencing data. A commonly used method to download from SRA is to use SRAtools (https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). In the above section, we downloaded through conda. If the conda downloaded version doesn't work, I would suggest to download the newest version from source code. 
@@ -171,7 +171,7 @@ gunzip Homo*
 ls ./ 
 # This should print out Homo_sapiens.GRCh38.dna.primary_assembly.fa 
 ```
-This downaloded and unzipped a humen genome in $example/human_data/, which will be used as the refernece genome for variant calling. This is often refered as the Genome Reference Consortium Human Build 38 (hg38), which is the primary assembly including the complete sequence of human chromosomes and often used as a reference for human genomic study. 
+This downloaded and unzipped a human genome in $example/human_data/, which will be used as the refernece genome for variant calling. This is often referred as the Genome Reference Consortium Human Build 38 (hg38), which is the primary assembly including the complete sequence of human chromosomes and often used as a reference for human genomic study. 
 
 Then, let's download some raw reads:
 
@@ -179,7 +179,7 @@ Then, let's download some raw reads:
 prefetch SRR098401
 fastq-dump --split-files --gzip SRR098401ra
 ```
-The above code downloads and transfer the .sra files to fastq or fastq.gz and generated two fastq.gz files, SRR098401_1.fastq.gz (forward-end sequencing) and  SRR098401_2.fastq.gz (reverse-end sequencing) for pair-end reads. If "prefetch" command line failed, I would suggest to manually download the data here: https://trace.ncbi.nlm.nih.gov/Traces/?view=run_browser&acc=SRR098401&display=metadata or potentially re-install the newest version of SRAtools through sourcecode (check the tutorial here **[script/software_installation.sh](script/software_installation.sh)**). 
+The above code downloads and convert the .sra files to fastq or fastq.gz and generated two fastq.gz files, SRR098401_1.fastq.gz (forward-end sequencing) and  SRR098401_2.fastq.gz (reverse-end sequencing) for pair-end reads. If "prefetch" command line failed, I would suggest to manually download the data here: https://trace.ncbi.nlm.nih.gov/Traces/?view=run_browser&acc=SRR098401&display=metadata or potentially re-install the newest version of SRAtools through sourcecode (check the tutorial here **[script/software_installation.sh](script/software_installation.sh)**). 
 
 This downloaded data file is the raw sequencing data from the whole exome sequencing for the 1000 genomes project (project description: https://www.ncbi.nlm.nih.gov/bioproject/PRJNA59853). It contains exome sequencing of (CEU) Utah residents with ancestry from Northern and Western Europe. 
 
@@ -225,7 +225,7 @@ Quality control softwares utilized the information in the sequencing and the qua
 
 # Section 4 
 ### 4.1 Quality control 
-The first step of most NGS pipeline is quality control. There are several tools for quality control, including Fastp, Trimommatics, etc. This step trims low-quality reads, removes short reads, removes adaptor sequences, etc. 
+The first step of most NGS pipeline is quality control. There are several tools for quality control, including Fastp, Trimommatic, etc. This step trims low-quality reads, removes short reads, removes adaptor sequences, etc. 
 
 After read trimming, a check procedure using tools such as FastQC and MultiQC is recommended to double check if the trimmed reads have any issues. FastQC could check the quality of individual sequencing files, while MultiQC could aggregate the quality from multiple FastQC results. 
 
@@ -244,7 +244,7 @@ quality_control.sh example/human_data $num_threads /example/human_cleaned
 ```
 The third argument specifies the output directory. This above code will generate a $ROOT/example/human_cleaned directory and stores all the results, including the cleaned reads and the statistics from quality control. 
 
-Now, in the output directory $ROOT/example/human_cleaned, there are three output directories. $ROOT/example/human_cleaned/cleaned contain the cleaned reads trimmed from fastp. $ROOT/example/human_cleaned/fastqc and $ROOT/example/human_cleaned/multiqc stored the results of quality control files. 
+Now, in the output directory $ROOT/example/human_cleaned, there are three output directories. $ROOT/example/human_cleaned/cleaned contain the cleaned reads trimmed from fastp. $ROOT/example/human_cleaned/fastqc and $ROOT/example/human_cleaned/multiqc stores the results of quality control files. 
 
 It is highly recommended to check the *.html results from  $ROOT/human_results/fastqc and $ROOT/human_results/multiqc. Details about how to check the results from fastqc and multiqc are attached here: https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/lessons/qc_fastqc_assessment.html. 
 
@@ -265,7 +265,7 @@ chmod +x ./script/alignment_variant_calling.sh
 num_threads=$(nproc --all) 
 ./script/alignment_variant_calling.sh example/human_cleaned/cleaned example/human_data/Homo_sapiens.GRCh38.dna.primary_assembly.fa $num_threads ./results_human_variant_calling
 ```
-The above code generates a output directort in $ROOT/example or the current directory, which contain the bowtie2 index files (*.bt2.tmp), alignment output (human_data.bam), sorted BAM files (human_data_sorted.bam), BAM index file (human_data_sorted.bam.bai). The sorted bam files could be used to visualize the results from variant calling. 
+The above code generates a output directort in $ROOT/example or the current directory, which contains the bowtie2 index files (*.bt2.tmp), alignment output (human_data.bam), sorted BAM files (human_data_sorted.bam), BAM index file (human_data_sorted.bam.bai). The sorted bam files could be used to visualize the results from variant calling. 
 
 ### 4.4 Visualize variant calling results: 
 After variant calling, it would be good to visualize the results first. There are many ways to visualize the results from SNP calling. Let's use a text-based tool (samtool tview) to visualize the results. 
@@ -278,13 +278,13 @@ The above code will give a text view to view the actual results from variant cal
 The differences identified between the sequencing data (SRR098401) and the human reference genome (GRCh38) are known as genetic variants. These could be single nucleotide variants (SNPs), small insertions and deletions (InDels), and structural variants (SVs). Identifying these variants is crucial for understanding their potential biological and medical implications. 
 
 # Section 5 - Conclusion 
-This tutorial provided a step-by-step guide for conducting a basic variant calling pipeline using next-generation sequencing (NGS) data. Starting from raw sequencing reads, we demonstrated how to perform quality control, genome assembly, alignment, and variant calling, followed by visualization of results. For beginners in bioinformatics, the repository offers a practical introduction to essential concepts, tools, and workflows. By following this guide, users can use automated scripts that can be adapted to their specific research needs while learning the fundamentals of NGS data analysis. 
+This tutorial provided a step-by-step guide for conducting a basic variant calling pipeline using next-generation sequencing (NGS) data. Starting from raw sequencing reads, we demonstrated how to perform quality control, genome assembly, alignment, and variant calling, followed by visualization of results. For beginners in bioinformatics, the repository offers a practical introduction to essential concepts, tools, and workflows. By following this guide, users can adapt the automated scripts to their specific research needs while learning the fundamentals of NGS data analysis. 
 
-Ultimately, this pipeline serves as a foundational framework for variant calling, which is a crucial process for understanding genetic variations and their implications in research fields such as precision medicine, evolutionary biology, and genomics. As NGS technologies continue to advance, mastering these workflows empowers researchers to analyze and extract meaningful insights from large-scale sequencing datasets.
+Ultimately, this pipeline serves as a foundational framework for variant calling, which is a crucial process for understanding genetic variations and their implications in research fields such as precision medicine, evolutionary biology, and genomics. As NGS technologies continue to advance, mastering these workflows empower researchers to analyze and extract meaningful insights from large-scale sequencing datasets.
 
 For further exploration, users are encouraged to experiment with the provided example data, modify the scripts, and explore downstream analyses tailored to their specific research questions.
 
-# Reference:
+# References:
 Andrew Rambaut, Nicholas C. Grass, Seq-Gen: an application for the Monte Carlo simulation of DNA sequence evolution along phylogenetic trees, Bioinformatics, Volume 13, Issue 3, June 1997, Pages 235–238, https://doi.org/10.1093/bioinformatics/13.3.235
 
 Shifu Chen, Yanqing Zhou, Yaru Chen, Jia Gu; fastp: an ultra-fast all-in-one FASTQ preprocessor, Bioinformatics, Volume 34, Issue 17, 1 September 2018, Pages i884–i890, https://doi.org/10.1093/bioinformatics/bty560
