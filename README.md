@@ -223,7 +223,7 @@ Clearly, the fastq files look very different than fastq file. Not only it contai
 
 Quality control softwares utilized the information in the sequencing and the quality score of fastq.gz and fastq files to determine which parts or reads should be trimmed. In the below section, we will dive into how to conduct quality control. 
 
-# Section 4 
+# IV. Variant calling pipeline
 ### 4.1 Quality control 
 The first step of most NGS pipeline is quality control. There are several tools for quality control, including Fastp, Trimommatic, etc. This step trims low-quality reads, removes short reads, removes adaptor sequences, etc. 
 
@@ -278,14 +278,14 @@ Type "g" could jump to anywhere in the alignment to view the results. Try to typ
 
 The genetic differences identified between the sequencing data (SRR098401) and the human reference genome (GRCh38) are known as genetic variants. These could be single nucleotide variants (SNPs), small insertions and deletions (InDels), and structural variants (SVs). Identifying these variants is crucial for understanding their potential biological and medical implications, and this variant calling process is the upstream procedure which prepares the data for further downstream analysis. 
 
-# Section 5 - Conclusion 
+# V. Conclusion 
 This tutorial provided a step-by-step guide for conducting a basic variant calling pipeline using next-generation sequencing (NGS) data. Starting from raw sequencing reads, I demonstrated how to perform quality control, genome assembly, alignment, and variant calling, followed by visualization of results. For beginners in bioinformatics, the repository offers a practical introduction to essential concepts, tools, and workflows. By following this guide, users can adapt the automated scripts to their specific research needs while learning the fundamentals of NGS data analysis. 
 
 Ultimately, this pipeline serves as a foundational framework for variant calling, which is a crucial process for understanding genetic variations and their implications in research fields such as precision medicine, evolutionary biology, and genomics. As NGS technologies continue to advance, mastering these workflows empower researchers to analyze and extract meaningful insights from large-scale sequencing datasets.
 
 For further exploration, users are encouraged to experiment with the provided example data, modify the scripts, and explore downstream analyses tailored to their specific research questions.
 
-# References:
+# VI. References:
 Andrew Rambaut, Nicholas C. Grass, Seq-Gen: an application for the Monte Carlo simulation of DNA sequence evolution along phylogenetic trees, Bioinformatics, Volume 13, Issue 3, June 1997, Pages 235–238, https://doi.org/10.1093/bioinformatics/13.3.235
 
 Shifu Chen, Yanqing Zhou, Yaru Chen, Jia Gu; fastp: an ultra-fast all-in-one FASTQ preprocessor, Bioinformatics, Volume 34, Issue 17, 1 September 2018, Pages i884–i890, https://doi.org/10.1093/bioinformatics/bty560
