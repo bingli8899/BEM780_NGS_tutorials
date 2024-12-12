@@ -151,10 +151,12 @@ script/check_command.sh FakeCommand
 ```
 The user should check the dependencies installed in their system first and then proceed to install softwares.  
 
-To install the actual software, I presented part of my method to download through source dependencies in $ROOT/script/software_installation.sh. It is noted that I tested this code in a online server with Linux system. Depending on the system, the codes (./script/software_installation.sh) may need to be modified. If there is any problem of running the code, I would suggest to run separate chunks of codes as separated by the ### in either script to figure out the issues. 
+To install the actual software, I presented part of my method to download through source dependencies in $ROOT/script/software_installation.sh. It is noted that I tested this code in a online server with Linux system (x86_64bit). To check the Linux system you are running, run "uname -m" as the command line. Depending on the system, the codes (./script/software_installation.sh) may need to be modified. If there is any problem of running the code, I would suggest to run separate chunks of codes as separated by the ### in either script to figure out the issues. 
 
 # Section 3: Description of the example data 
-This tutorial worked through real human data to represent the pipeline. It also utilized some simulated data to test codes, because simulated dataset are smaller and could be run quickly. The description of the simulated dataset and its corresponding dataset are presented in **[example/simulated_data](example/simulated_data/)**. Details about this simulated dataset will not be presented along this tutorial. 
+This tutorial worked through real human data to represent the pipeline. By conducting variant calling to the human data, we can understand what is the genetic difference between the reference genome and our dataset. Those genetic variants could be used for downstream analysis to call for single nucleotide variants, insertions and deletions , and structural variants. 
+
+This tutorial also utilized some simulated data to test codes, because simulated dataset are smaller and could be run quickly. The description of the simulated dataset and its corresponding dataset are presented in **[example/simulated_data](example/simulated_data/)**. Details about this simulated dataset will not be presented along this tutorial. 
 
 ### Let's download the example data from SRA 
 Sequence Read Archive (SRA) data, available through multiple cloud providers and NCBI servers, is the largest publicly available repository for raw sequencing data. A commonly used method to download from SRA is to use SRAtools (https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). In the above section, we downloaded through conda. If the conda downloaded version doesn't work, I would suggest to download the newest version from source code. 
@@ -247,9 +249,9 @@ Now, in the output directory $ROOT/example/human_cleaned, there are three output
 It is highly recommended to check the *.html results from  $ROOT/human_results/fastqc and $ROOT/human_results/multiqc. Details about how to check the results from fastqc and multiqc are attached here: https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/lessons/qc_fastqc_assessment.html. 
 
 ### 4.2 Assembly and Alignment 
-There are many pipelines and methods to assemble genomes, and I will present a commonly used method, which used BcfTools , SamTools and Bowtie to assemble and align the genomes. First, assembly could be classified into three ways: 1. De-novo; 2. Reference-based method, 3. A mixture of de-novo and reference based method. 
+There are many pipelines and methods to assemble genomes, and I will present a commonly used method, which used BcfTools, SamTools, and Bowtie to assemble and align the genomes. First, assembly could be classified into three ways: 1. De-novo; 2. Reference-based method, 3. A mixture of de-novo and reference based method. 
 
-I will present the most common method, reference-based method, to call variants. The first step is to map the reads to a reference genome with Bowtie2. Bowtie2 maps the sequencing reads to a reference genome, which in general is composed of two steps: 1. create a bowtie index based on reference genome (bowtie2-build); 2. align reads to reference (bowtie2 -x). Bowtie2 generates alignment file (*.sam)containing the information about where to map the reads to a reference. Details of the code are in the comments of $ROOT/script/alignment_variant_calling.sh. 
+I will present the most common method, reference-based method, to call variants. The first step is to map the reads to a reference genome with Bowtie2. Bowtie2 maps the sequencing reads to a reference genome, which in general is composed of two steps: 1. create a bowtie index based on reference genome (bowtie2-build); 2. align reads to reference (bowtie2 -x). Bowtie2 generates alignment file (*.sam) containing the information about where to map the reads to a reference. Details of the code are in the comments of $ROOT/script/alignment_variant_calling.sh. 
 
 ### 4.3 Variant Calling
 For NGS pipeline, converting between file formats is an essential step, and SamTools is useful to transfering between file formats and conduct a series of bioinformatic applications. To conduct variant calling, SamTools will be used to convert the output from Bowtie2 (*.sam) to *.bam files, which will be input to BcfTools for variant calling. 
@@ -258,11 +260,12 @@ Below I wrote the alignment and variant calling into one major scipts $ROOT/scri
 
 Usage of the major script: 
 ```
-# Usage: alignment_variant_calling.sh <input_fasta_directory> <input_reference_file> <number of threads> <path to the output directory>
+# Usage: alignment_variant_calling.sh <input_fastq_directory> <input_reference_file> <number of threads> <path to the output directory>
 chmod +x ./script/alignment_variant_calling.sh
-./script/alignment_variant_calling.sh example/human_data/ example/human_data/Homo_sapiens.GRCh38.dna.primary_assembly.fa 4 ./results_human_variant_calling
+num_threads=$(nproc --all) 
+./script/alignment_variant_calling.sh example/human_cleaned/cleaned example/human_data/Homo_sapiens.GRCh38.dna.primary_assembly.fa $num_threads ./results_human_variant_calling
 ```
-The above code generates a output directort in $ROOT or the current directory, which contain the bowtie2 index files (*.bt2.tmp), alignment output (human_data.bam), sorted BAM files (human_data_sorted.bam), BAM index file (human_data_sorted.bam.bai). The sorted bam files could be used to visualize the results from variant calling. 
+The above code generates a output directort in $ROOT/example or the current directory, which contain the bowtie2 index files (*.bt2.tmp), alignment output (human_data.bam), sorted BAM files (human_data_sorted.bam), BAM index file (human_data_sorted.bam.bai). The sorted bam files could be used to visualize the results from variant calling. 
 
 ### 4.4 Visualize variant calling results: 
 After variant calling, it would be good to visualize the results first. There are many ways to visualize the results from SNP calling. Let's use a text-based tool (samtool tview) to visualize the results. 
@@ -270,7 +273,9 @@ After variant calling, it would be good to visualize the results first. There ar
 ```
 samtools tview ./results_human_variant_calling/human_data_sorted.bam ./example/human_data/Homo_sapiens.GRCh38.dna.primary_assembly.fa
 ```
-The above code will give a text view to view the actual results from variant calling. Type "g" could jump to anywher in the alignment to view the results. 
+The above code will give a text view to view the actual results from variant calling. Type "g" could jump to anywhere in the alignment to view the results. Try to type a large number like "chr20:10000" and "chr2:100000". The first part indicates which chromosome you want to check and the second part indicates which position along the sequence you want to check. Any lines indicated by "......." mean that the sequence is the same to the reference genome. Any difference is labeled with the actual variants. Have fun in finding the difference! 
+
+The differences identified between the sequencing data (SRR098401) and the human reference genome (GRCh38) are known as genetic variants. These could be single nucleotide variants (SNPs), small insertions and deletions (InDels), and structural variants (SVs). Identifying these variants is crucial for understanding their potential biological and medical implications. 
 
 # Section 5 - Conclusion 
 This tutorial provided a step-by-step guide for conducting a basic variant calling pipeline using next-generation sequencing (NGS) data. Starting from raw sequencing reads, we demonstrated how to perform quality control, genome assembly, alignment, and variant calling, followed by visualization of results. For beginners in bioinformatics, the repository offers a practical introduction to essential concepts, tools, and workflows. By following this guide, users can use automated scripts that can be adapted to their specific research needs while learning the fundamentals of NGS data analysis. 
