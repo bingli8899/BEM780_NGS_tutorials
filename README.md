@@ -65,14 +65,14 @@ The tutorial was designed as a github repo, where all scripts will be stored in 
 
 - **[example/](example/)**  
   Contains example files and data for testing and simulation:  
-  - **simulated_data/**  
+  - **[simulated_data/](example/simulated_data)** 
     Example input files, including:  
     - `A.fasta`, `B.fasta`, ... `E.fasta`  
     - `reference.fasta`  
-  - **simulation/**  
+  - **[simulation/](example/simulation)**  
     Files and scripts for running simulations:  
-    - `configuration.txt` (example/simulation/configuration.txt) 
-    - `simulation_seqs.sh` (example/simulation/simulation_seqs.sh) 
+    - [configuration.txt](example/simulation/configuration.txt) 
+    - [simulation_seqs.sh](example/simulation/simulation_seqs.sh) 
 - **[figures/](igures/)**
   Contains all figures used in this tutorial. All figures are made for this tutorial and no citation is needed. 
 
