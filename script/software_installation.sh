@@ -33,7 +33,16 @@ make
 cd ../../executables
 ln -s ../downloaded_softwares/bcftools*/bcftools 
 
-## Download Bowtie2 
+## Download SRAtools
+cd ../downloaded_softwares
+# The below should be adjusted for different version and be adjusted to the 
+wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.1.1/sratoolkit.3.1.1-ubuntu64.tar.gz
+tar -xf sratoolkit.3.1.1-ubuntu64.tar.gz 
+rm *tar* 
+cd sra*
+cd bin 
+# Then, you can find the binary executable, no need to compile the file 
+
 
 
 
