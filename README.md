@@ -105,7 +105,7 @@ conda activate snp_tutorial
 ```
 PS: 1. You might need to type in "Y" to proceed with running the above code. 2. Make sure to deactivate the conda environment after you are done with this tutorial. 3. Makre sure you re-active the environment if you want to resume back to your previous work. 
 
-Then, run the following codes to install necessary softwares. In real reseach, it would be better to keep a good record of how you downloaded the softwares and the software versions. 
+Then, run the following codes to install necessary softwares. In real reseach, it would be better to keep a good record of how you downloaded the softwares and the software versions. Most of the conda-installed softwares are NOT the most recent version.  
 ```
 conda install bioconda::samtools
 conda install bowtie2
@@ -152,21 +152,13 @@ The user should check the dependencies installed in their system first and then 
 To install the actual software, I presented part of my method to download through source dependencies in $ROOT/script/software_installation.sh. It is noted that I tested this code in a online server with Linux system. Depending on the system, the codes (./script/software_installation.sh) may need to be modified. If there is any problem of running the code, I would suggest to run separate chunks of codes as separated by the ### in either script to figure out the issues. 
 
 # Description of the example data 
-This tutorial uses two sets of data, simulated data and real human data. 
+This tutorial worked through real human data to represent the pipeline. It also utilized some simulated data to test codes, because simulated dataset are smaller and could be run quickly. The description of the simulated dataset and its corresponding dataset are presented in **[example/simulated_data](example/simulated_data/)**. Details about this simulated dataset will not be presented along this tutorial. 
 
-Sequencing raw reads are typically stored in fastq (fq, fq.gz). Later, such files are processed and potentially transferred to fasta files (.fa, .fa.gz). The difference between .fasta file and .fastq file is that fasta files only contain the nucleotide or protein sequences, while fastq files contain more sequencing information such as quality score. Here, because our example data were simulated without quality score. We will start with fasta files. The real human data are stored in .fastq.gz with R1 and R2 for each sample. For paried-read sequences, each sample has two files .R1 (forward sequencing) and .R2 (backward sequencing). 
+### What are some typical formats of raw sequencing data? 
+Sequencing raw reads are typically stored in fastq (fq, fq.gz). Later, such files are processed and potentially transferred to fasta files (.fa, .fa.gz). The difference between .fasta file and .fastq file is that fasta files only contain the nucleotide or protein sequences, while fastq files contain more sequencing information such as quality score. 
 
-#### Simulated data 
-Below section is a basic description of how I got the simulated data under $ROOT/example. This simulated_data is small in size and could be run to test if the scripts is correctly implemented and the softwares are correctly downloaded. Data are stored in $ROOT/example/example_data/*.fasta. 
+Here, because our example data were simulated without quality score. We will start with fasta files. The real human data are stored in .fastq.gz with R1 and R2 for each sample. For paried-read sequences, each sample has two files .R1 (forward sequencing) and .R2 (backward sequencing). 
 
-Those are simulated data based on 5 accessions/taxa/samples with one simulated reference.fasta. I attached the detials about how I simulated the data to the $ROOT/example/README.md. Basically, if simphy (https://github.com/adamallo/SimPhy; Mallo et al. 2016) and seqgen (https://github.com/rambaut/Seq-Gen; Rambaut et al. 1997) got installed in one executable folder, running the below codes from $ROOT will generate the data. 
-```
-chmod +x ./example/simulation/simulation_seqs.sh
-./example/simulation/simulation_seqs.sh <executable_folder> <configuration_folder> <output_folder>
-```
-Here, the five simulated fasta files are ready to use in $ROOT/example/example_data. 
-
-#### Real Human data 
 Let's work on some real human data as well. The below steps show how to download read human data from online resouces: 
 
 Download the reference: 
@@ -174,8 +166,10 @@ Download the reference:
 mkdir -p example/human_data && cd example/human_data
 wget ftp://ftp.ensembl.org/pub/release-113/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 gunzip Homo*
+ls ./ 
+# This should print out Homo_sapiens.GRCh38.dna.primary_assembly.fa 
 ```
-This downaloded and unzipped a humen genome (), which will be used as the refernece genome for variant calling. This is often refered as the Genome Reference Consortium Human Build 38 (hg38), which is the primary assembly including the complete sequence of human chromosomes and often used as a reference for human genomic study. 
+This downaloded and unzipped a humen genome in $example/human_data/, which will be used as the refernece genome for variant calling. This is often refered as the Genome Reference Consortium Human Build 38 (hg38), which is the primary assembly including the complete sequence of human chromosomes and often used as a reference for human genomic study. 
 
 Then, let's download some raw reads:
 ``` 
@@ -184,12 +178,17 @@ echo $num_threads
 prefetch SRR098401
 fastq-dump --split-files --gzip SRR098401ra --threads $num_threads 
 ```
+If "prefetch" command line failed, I would suggest to manually download the data here: https://trace.ncbi.nlm.nih.gov/Traces/?view=run_browser&acc=SRR098401&display=metadata
+
+
+
 The above code might be slow. If that's the case, run the below code after "prefetch" to only extract 100000 bases: 
 ```
 fastq-dump --split-files --gzip -N 1 -X 100000 SRR098401ra 
 cd ../../ 
 ```
-Now, the real human data are downloaded in $ROOT/example/human_data
+
+The example data are now downloaded in $ROOT/example/human_data
 
 # Quality control 
 The first step of most NGS pipeline is quality control. There are several tools for quality control, including Fastp, Trimommatics, etc. This step trims low-quality reads, removes short reads, removes adaptor sequences, etc. After read trimming, a check procedure using tools such as FastQC and MultiQC is recommended to double check if the trimmed reads have any issues. FastQC could check the quality of individual sequencing files, while MultiQC could aggregate the quality from multiple FastQC results. 
